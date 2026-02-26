@@ -86,16 +86,16 @@ const validOrigins = allowedOrigins.filter(Boolean);
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (e.g. curl, server-to-server)
+      // Allow requests with no origin
       if (!origin) return callback(null, true);
       
-      // Permitir CUALQUIER subdominio de vercel.app (producción y preview)
-      if (origin.endsWith('.vercel.app')) {
+      // Allow ALL Vercel subdomains
+      if (origin.includes('.vercel.app')) {
         return callback(null, true);
       }
       
-      // Permitir orígenes en la whitelist
-      if (validOrigins.includes(origin)) {
+      // Allow localhost
+      if (origin.includes('localhost')) {
         return callback(null, true);
       }
       
