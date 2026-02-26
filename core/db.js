@@ -10,8 +10,10 @@ const pool = new Pool({
   max: 10,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,
+  ssl: {
+    rejectUnauthorized: false  // <--- AÑADE ESTO
+  },
 });
-
 /**
  * Execute a parameterized SQL query.
  * Adapts internal ? placeholders to PostgreSQL $1, $2, etc. if needed,
