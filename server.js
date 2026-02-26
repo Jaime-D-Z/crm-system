@@ -71,36 +71,41 @@ const sessionStore = new PgSession({
 
 // ── CORS ──────────────────────────────────────────────────
 // Allow React dev server (and production URL) to call the API with cookies
+// ── CORS ──────────────────────────────────────────────────
 const allowedOrigins = [
   process.env.FRONTEND_URL || "http://localhost:5173",
   "http://localhost:5173",
-  "http://localhost:5174", // Support alternative dev port
-  "http://localhost:5175", // Support alternative dev port
-  "http://localhost:5176", // Support alternative dev port
-  "http://localhost:3000", // same-origin requests (HTML views)
+  "http://localhost:5174",
+  "http://localhost:5175",
+  "http://localhost:5176",
+  "http://localhost:3000",
 ];
 
-// Remove empty/undefined origins
 const validOrigins = allowedOrigins.filter(Boolean);
 
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (e.g. curl, server-to-server, mobile apps)
+      // Allow requests with no origin (e.g. curl, server-to-server)
       if (!origin) return callback(null, true);
       
-      // Check if origin is in whitelist
+      // Permitir CUALQUIER subdominio de vercel.app (producción y preview)
+      if (origin.endsWith('.vercel.app')) {
+        return callback(null, true);
+      }
+      
+      // Permitir orígenes en la whitelist
       if (validOrigins.includes(origin)) {
         return callback(null, true);
       }
       
-      // Log rejected origin for debugging
       console.warn(`CORS: origin '${origin}' not allowed`);
       callback(new Error(`CORS: origin '${origin}' not allowed`));
     },
     credentials: true,
   }),
 );
+
 
 // ── Core Middleware ───────────────────────────────────────
 app.use(
