@@ -130,9 +130,15 @@ app.use(
     store: sessionStore,
     resave: false,
     saveUninitialized: false,
-    cookie: { httpOnly: true, sameSite: "lax", maxAge: 8 * 60 * 60 * 1000 },
+    cookie: { 
+      httpOnly: true,
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',  // ← CAMBIO IMPORTANTE
+      secure: process.env.NODE_ENV === 'production',  // ← CAMBIO IMPORTANTE
+      maxAge: 8 * 60 * 60 * 1000 
+    },
   }),
 );
+
 
 // ── Static files ──────────────────────────────────────────
 app.use(express.static(path.join(__dirname, "public")));
